@@ -1,4 +1,4 @@
-timers
+schedulers
 ===
 
 This repo contains implementations for a couple different timer designs found [in this paper](http://www.cs.columbia.edu/~nahum/w6998/papers/sosp87-timing-wheels.pdf).

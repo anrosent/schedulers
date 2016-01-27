@@ -1,4 +1,4 @@
-from timers.tlist import *
+from schedulers.tlist import *
 
 def tSimple(cls):
     scheduler = cls()

@@ -1,4 +1,4 @@
-from timers import SchedulerBase, Timer
+from schedulers import SchedulerBase, Timer
 
 class TimerListScheduler(SchedulerBase):
 
