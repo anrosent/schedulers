@@ -1,4 +1,5 @@
 from schedulers.tlist import *
+from schedulers.tqueue import *
 
 def tSimple(cls):
     scheduler = cls()
@@ -11,5 +12,11 @@ def tSimple(cls):
         scheduler._tick(1)
         assert sentinal == check
 
+#TODO: randomized, general tester
+#TODO: run tester on all impls
+
 def testTlist():
     tSimple(TimerListScheduler)
+
+def testTQueue():
+    tSimple(TimerQueueScheduler)

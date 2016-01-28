@@ -12,6 +12,7 @@ All the timers share the same API:
 
 #Scheduler Designs Implemented thus far
  - Timer List
+ - Sorted Timer List / Timer Queue
 
 #Testing
 
