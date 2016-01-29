@@ -1,22 +1,38 @@
+from random import randint
+
+from schedulers import *
 from schedulers.tlist import *
 from schedulers.tqueue import *
 
-def tSimple(cls):
-    scheduler = cls()
-    sentinal = False
-    def fun():
-        nonlocal sentinal
-        sentinal = True
-    rid = scheduler.schedule(3, fun)
-    for check in [False, False, True]:
-        scheduler._tick(1)
-        assert sentinal == check
+N = 100
 
-#TODO: randomized, general tester
-#TODO: run tester on all impls
+def oracle(cls, n):
+    scheduler = cls()
+    sentinal = []
+    def invariant(ticks, alltimers, expired):
+        correct = filter(lambda t: t.interval <= ticks, alltimers)
+        correctInts = sorted(t.interval for t in correct)
+        return correctInts == sorted(expired)
+
+    def funmaker(i):
+        def f():
+            nonlocal sentinal
+            sentinal.append(i)
+        return f
+
+    timers = []
+    for i in range(n):
+        t = randint(1, n)
+        timers.append(Timer(t, i, funmaker(t)))
+    for timer in timers:
+        scheduler.schedule(timer.interval, timer.fun)
+
+    for i in range(n):
+        assert invariant(i, timers, sentinal)
+        scheduler._tick()
 
 def testTlist():
-    tSimple(TimerListScheduler)
+    oracle(TimerListScheduler, N)
 
 def testTQueue():
-    tSimple(TimerQueueScheduler)
+    oracle(TimerQueueScheduler, N)

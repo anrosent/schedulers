@@ -27,7 +27,7 @@ class TimerQueueScheduler(SchedulerBase):
             return None
         return self.timers.pop(ix)
 
-    def _tick(self, ticklength: int):
+    def _tick(self, ticklength: int = 1):
         expired = []
         for ix, timer in enumerate(self.timers):
             timer.interval -= ticklength
@@ -35,7 +35,7 @@ class TimerQueueScheduler(SchedulerBase):
                 timer.fun() 
                 expired.append(ix)
             else:
-                break
+                continue
         # clear timers last to first so we don't have to shift indices
         for ix in reversed(expired):
             self.timers.pop(ix)

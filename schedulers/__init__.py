@@ -9,6 +9,12 @@ class Timer(object):
         self.rid = rid
         self.fun = fun
 
+    def __str__(self):
+        return str((self.interval, self.rid))
+
+    def __repr__(self):
+        return str(self)
+
 class SchedulerBase(object):
 
     def schedule(self, interval: int, fun):
@@ -17,12 +23,12 @@ class SchedulerBase(object):
     def stop_timer(self, rid: int) -> bool:
         raise NotImplementedError
 
-    def run(self, ticklength: int):
+    def run(self, ticklength: int = 1):
         while True:
             self._tick(ticklength)
             sleep(ticklength)
 
-    def start(self, ticklength: int):
+    def start(self, ticklength: int = 1):
         thread = Thread(target=self.run, args=[ticklength])
         thread.start()
         return thread

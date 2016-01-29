@@ -19,7 +19,7 @@ class TimerListScheduler(SchedulerBase):
             return None
         return self.timers.pop(ix)
 
-    def _tick(self, ticklength: int):
+    def _tick(self, ticklength: int = 1):
         expired = []
         for ix, timer in enumerate(self.timers):
             timer.interval -= ticklength
