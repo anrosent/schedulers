@@ -23,6 +23,9 @@ class SchedulerBase(object):
     def stop_timer(self, rid: int) -> bool:
         raise NotImplementedError
 
+    def _tick(self, ticklength: int):
+        raise NotImplementedError
+
     def run(self, ticklength: int = 1):
         while True:
             self._tick(ticklength)
@@ -33,3 +36,9 @@ class SchedulerBase(object):
         thread.start()
         return thread
 
+def locked(f):
+    def wr(self, *args, **kwargs):
+        self.mutex.acquire()
+        f(self, *args, **kwargs)
+        self.mutex.release()
+    return wr

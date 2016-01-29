@@ -1,4 +1,5 @@
-from schedulers import SchedulerBase, Timer
+from schedulers import SchedulerBase, Timer, locked
+from threading import Lock
 
 def _insert_sorted(lst, el, cp):
     for i, e in enumerate(lst):
@@ -11,14 +12,17 @@ def _insert_sorted(lst, el, cp):
 class TimerQueueScheduler(SchedulerBase):
 
     def __init__(self):
+        self.mutex = Lock()
         self.rid_ctr = 0
         self.timers = []
 
+    @locked
     def schedule(self, interval: int, fun):
         rid = self.rid_ctr
         _insert_sorted(self.timers, Timer(interval, rid, fun), lambda a, b: a.interval - b.interval) 
         self.rid_ctr += 1
 
+    @locked
     def stop(self, rid: int) -> Timer:
         for ix, timer in enumerate(self.timers):
             if timer.rid == rid:
@@ -27,6 +31,7 @@ class TimerQueueScheduler(SchedulerBase):
             return None
         return self.timers.pop(ix)
 
+    @locked
     def _tick(self, ticklength: int = 1):
         expired = []
         for ix, timer in enumerate(self.timers):
