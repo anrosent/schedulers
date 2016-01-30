@@ -8,11 +8,10 @@ class TimerListScheduler(SchedulerBase):
         self.rid_ctr = 0
         self.timers = []
 
-    @locked
-    def schedule(self, interval: int, fun):
-        rid = self.rid_ctr
-        self.timers.append(Timer(interval, rid, fun)) 
-        self.rid_ctr += 1
+    def _start_timer(self, interval: int, rid: int, fun) -> Timer:
+        t = Timer(interval, rid, fun)
+        self.timers.append(t)
+        return t
 
     @locked
     def stop(self, rid: int) -> Timer:

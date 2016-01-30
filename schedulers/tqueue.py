@@ -16,11 +16,10 @@ class TimerQueueScheduler(SchedulerBase):
         self.rid_ctr = 0
         self.timers = []
 
-    @locked
-    def schedule(self, interval: int, fun):
-        rid = self.rid_ctr
-        _insert_sorted(self.timers, Timer(interval, rid, fun), lambda a, b: a.interval - b.interval) 
-        self.rid_ctr += 1
+    def _start_timer(self, interval: int, rid: int, fun) -> Timer:
+        t = Timer(interval, rid, fun)
+        _insert_sorted(self.timers, t, lambda a, b: a.interval - b.interval) 
+        return t
 
     @locked
     def stop(self, rid: int) -> Timer:
