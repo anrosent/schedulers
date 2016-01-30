@@ -10,10 +10,9 @@ N = 100
 def oracle(cls, n):
     scheduler = cls()
     sentinal = []
-    def check_invariant(ticks, alltimers, expired):
-        correct = filter(lambda t: t.interval <= ticks, alltimers)
-        correctInts = sorted(t.interval for t in correct)
-        assert correctInts == sorted(expired), "%s, %s, %s" % (ticks, correctInts, sorted(expired))
+    def check_invariant(ticks, intervals, expired):
+        correct = sorted(filter(lambda i: i <= ticks, intervals))
+        assert correct == expired, "%s, %s, %s" % (ticks, correct, expired)
 
     def funmaker(i):
         def f():
@@ -21,15 +20,11 @@ def oracle(cls, n):
             sentinal.append(i)
         return f
 
-    timers = []
-    for i in range(n):
-        t = randint(1, n)
-        timers.append(Timer(t, i, funmaker(t)))
-    for timer in timers:
-        scheduler.schedule(timer.interval, timer.fun)
+    intervals = [randint(1, n) for i in range(n)]
+    timers = [scheduler.schedule(t, funmaker(t)) for t in intervals]
 
     for i in range(n):
-        check_invariant(i, timers, sentinal)
+        check_invariant(i, intervals, sentinal)
         scheduler._tick()
 
 #TODO: tests for stop API

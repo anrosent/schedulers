@@ -5,8 +5,9 @@ from threading import Thread
 def locked(f):
     def wr(self, *args, **kwargs):
         self.mutex.acquire()
-        f(self, *args, **kwargs)
+        result = f(self, *args, **kwargs)
         self.mutex.release()
+        return result
     return wr
 
 class Timer(object):
