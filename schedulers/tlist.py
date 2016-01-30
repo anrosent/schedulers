@@ -10,7 +10,7 @@ class TimerListScheduler(SchedulerBase):
         self.t = 0
 
     def _start_timer(self, interval: int, rid: int, fun) -> Timer:
-        t = Timer(interval, rid, fun)
+        t = Timer(self.t + interval, rid, fun)
         self.timers.append(t)
         return t
 
@@ -28,7 +28,7 @@ class TimerListScheduler(SchedulerBase):
         self.t += ticklength
         expired = []
         for ix, timer in enumerate(self.timers):
-            if timer.interval <= self.t:
+            if timer.expiry <= self.t:
                 timer.fun() 
                 expired.append(ix)
 

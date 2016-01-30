@@ -19,7 +19,7 @@ class TimerQueueScheduler(SchedulerBase):
 
     def _start_timer(self, interval: int, rid: int, fun) -> Timer:
         t = Timer(self.t + interval, rid, fun)
-        _insert_sorted(self.timers, t, lambda a, b: a.interval - b.interval) 
+        _insert_sorted(self.timers, t, lambda a, b: a.expiry - b.expiry) 
         return t
 
     @locked
@@ -37,7 +37,7 @@ class TimerQueueScheduler(SchedulerBase):
 
         expired = []
         for ix, timer in enumerate(self.timers):
-            if timer.interval <= self.t:
+            if timer.expiry <= self.t:
                 timer.fun() 
                 expired.append(ix)
             else:

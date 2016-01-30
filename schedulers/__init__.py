@@ -12,13 +12,13 @@ def locked(f):
 
 class Timer(object):
 
-    def __init__(self, interval, rid, fun):
-        self.interval = interval
+    def __init__(self, expiry, rid, fun):
+        self.expiry = expiry 
         self.rid = rid
         self.fun = fun
 
     def __str__(self):
-        return str((self.interval, self.rid))
+        return str((self.expiry, self.rid))
 
     def __repr__(self):
         return str(self)
