@@ -29,16 +29,24 @@ class SchedulerBase(object):
 
     @locked
     def schedule(self, interval: int, fun) -> Timer:
-        rid = self._get_rid()
+        rid = self._new_rid()
         timer = self._start_timer(interval, rid, fun)
-        self._inc_rid()
         return timer 
 
-    def _get_rid(self):
-        return self.rid_ctr
+    @locked
+    def repeat(self, interval: int, fun) -> Timer:
+        rid = self._new_rid()
+        def repeater():
+            fun()
+            self._start_timer(interval, rid, fun)
 
-    def _inc_rid(self):
+        return self._start_timer(interval, rid, repeater)
+        
+
+    def _new_rid(self):
+        rid = self.rid_ctr
         self.rid_ctr += 1
+        return rid
 
     def stop_timer(self, rid: int) -> bool:
         raise NotImplementedError
